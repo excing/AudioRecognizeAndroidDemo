@@ -17,6 +17,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Switch
 import android.widget.TextView
+import android.widget.ToggleButton
 import androidx.activity.result.contract.ActivityResultContracts.GetContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity(), RecognizeService.OnRecognizeResultList
     private lateinit var resultRecyclerView: RecyclerView
     private val recognizeResults = ArrayList<RecognizeResultViewData>()
 
-    private lateinit var audioRecognize: Switch
+    private lateinit var audioRecognizeToggleButton: ToggleButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,8 +76,8 @@ class MainActivity : AppCompatActivity(), RecognizeService.OnRecognizeResultList
             getContent.launch("application/zip")
         }
 
-        audioRecognize = findViewById(R.id.audioRecognize)
-        audioRecognize.setOnCheckedChangeListener { _, isChecked ->
+        audioRecognizeToggleButton = findViewById(R.id.audioRecognize)
+        audioRecognizeToggleButton.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) tryStartAudioClassification()
             else stopAudioClassification()
         }
@@ -144,8 +145,8 @@ class MainActivity : AppCompatActivity(), RecognizeService.OnRecognizeResultList
     }
 
     private fun playRecognizeAudio(url: String, start: Float, end: Float) {
-        if (audioRecognize.isChecked) {
-            audioRecognize.performClick()
+        if (audioRecognizeToggleButton.isChecked) {
+            audioRecognizeToggleButton.performClick()
         }
         oncePlayerService.stop()
         oncePlayerService.play(
@@ -158,7 +159,7 @@ class MainActivity : AppCompatActivity(), RecognizeService.OnRecognizeResultList
     override fun onTopResumedActivityChanged(isTopResumedActivity: Boolean) {
         // Handles "top" resumed event on multi-window environment
 
-        if (!findViewById<Switch>(R.id.audioRecognize).isChecked) {
+        if (!audioRecognizeToggleButton.isChecked) {
             return
         }
 
@@ -444,13 +445,24 @@ class MainActivity : AppCompatActivity(), RecognizeService.OnRecognizeResultList
 
     private fun loadVoskModel(uri: Uri) {
         ModelService.unpack(this, uri, { _model ->
-            run {
-                voskModel = _model
+            voskModel = _model
+            runOnUiThread {
+                resultRecyclerAdapter.notifyDataSetChanged()
+                audioRecognizeToggleButton.isEnabled = true
             }
         }, { s ->
-            run {
-                Log.d(TAG, "loadModel: $s")
-            }
+            recognizeResults.add(
+                RecognizeResultViewData(
+                    System.currentTimeMillis(),
+                    s,
+                    "",
+                    0f,
+                    0f,
+                    finished = false,
+                    playing = false
+                )
+            )
+            runOnUiThread { resultRecyclerAdapter.notifyDataSetChanged() }
         })
     }
 

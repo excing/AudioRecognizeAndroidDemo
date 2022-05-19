@@ -32,7 +32,10 @@ public class ModelService {
             try {
                 String modelPath = getModelPath(modelFolder);
                 Model model = new Model(modelPath);
-                handler.post(() -> modelCallback.onComplete(model));
+                handler.post(() -> {
+                    modelCallback.onComplete(model);
+                    messageCallback.onComplete("模型加载成功");
+                });
                 return;
             } catch (IOException | NullPointerException e) {
                 e.printStackTrace();
@@ -42,7 +45,10 @@ public class ModelService {
                 String dist = unzipFolder(is, modelFolder, s -> handler.post(() -> messageCallback.onComplete(s)));
                 handler.post(() -> messageCallback.onComplete("开始加载模型……"));
                 Model model = new Model(dist);
-                handler.post(() -> modelCallback.onComplete(model));
+                handler.post(() -> {
+                    modelCallback.onComplete(model);
+                    messageCallback.onComplete("模型加载成功");
+                });
             } catch (IOException e) {
                 modelFolder.deleteOnExit();
                 handler.post(() -> messageCallback.onComplete(e.getLocalizedMessage()));
