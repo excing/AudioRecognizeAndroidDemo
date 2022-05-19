@@ -41,7 +41,7 @@ https://github.com/excing/AudioRecognizeAndroidDemo.git
 
 ## 参考
 
-感谢以下项目
+感谢以下开源项目和模型
 
 - Vosk Demo on Android Github Project: <https://github.com/alphacep/vosk-android-demo>
 - Sound yamnet/classification model: <https://tfhub.dev/google/lite-model/yamnet/classification/tflite/1>
