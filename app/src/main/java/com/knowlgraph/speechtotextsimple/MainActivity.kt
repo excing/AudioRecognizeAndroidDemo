@@ -205,7 +205,18 @@ class MainActivity : AppCompatActivity(), RecognizeService.OnRecognizeResultList
         if (audioClassifier != null) return
 
         recognizeResults.clear()
-        resultRecyclerAdapter.notifyDataSetChanged()
+        recognizeResults.add(
+            RecognizeResultViewData(
+                System.currentTimeMillis(),
+                "（说点什么……）",
+                "",
+                0f,
+                0f,
+                finished = false,
+                playing = false
+            )
+        )
+        notifyDataSetChanged()
 
         val cacheRecord = File(cacheDir, "record")
         deleteRecordCache(cacheRecord)
@@ -464,7 +475,7 @@ class MainActivity : AppCompatActivity(), RecognizeService.OnRecognizeResultList
             recognizeResults.add(
                 RecognizeResultViewData(
                     System.currentTimeMillis(),
-                    s,
+                    "（$s）",
                     "",
                     0f,
                     0f,
