@@ -11,8 +11,8 @@ android {
         applicationId "com.knowlgraph.speechtotextsimple"
         minSdkVersion 23
         targetSdkVersion 31
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
 //        ndk {
 //            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64', 'x86'
 //        }
