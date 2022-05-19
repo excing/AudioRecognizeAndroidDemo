@@ -68,6 +68,9 @@ class RecognizeService
                 }
                 val recognizeLen =
                     (audioBufferLen - recognizeIndex).coerceAtMost(recognizeBuffer.size)
+                if (recognizeLen < recognizeBuffer.size) {
+                    continue
+                }
                 System.arraycopy(audioBuffer, recognizeIndex, recognizeBuffer, 0, recognizeLen)
                 recognizeIndex += recognizeLen
 

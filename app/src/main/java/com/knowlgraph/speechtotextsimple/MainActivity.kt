@@ -73,6 +73,7 @@ class MainActivity : AppCompatActivity(), RecognizeService.OnRecognizeResultList
         resultRecyclerView.adapter = resultRecyclerAdapter
 
         findViewById<Button>(R.id.openVoskModel).setOnClickListener {
+            stopAudioClassification()
             getContent.launch("application/zip")
         }
 
@@ -244,7 +245,7 @@ class MainActivity : AppCompatActivity(), RecognizeService.OnRecognizeResultList
                 bufferSizeInBytes = modelRequiredBufferSize
             }
             record = AudioRecord(
-                MediaRecorder.AudioSource.MIC, audioTensor.format.sampleRate,
+                MediaRecorder.AudioSource.VOICE_RECOGNITION, audioTensor.format.sampleRate,
                 channelConfig.toInt(), AudioFormat.ENCODING_PCM_FLOAT, bufferSizeInBytes
             )
             SupportPreconditions.checkState(
@@ -376,13 +377,18 @@ class MainActivity : AppCompatActivity(), RecognizeService.OnRecognizeResultList
 
     private fun stopAudioClassification() {
         handler.removeCallbacksAndMessages(null)
-        audioRecord?.release()
-        audioRecord = null
-        audioClassifier?.close()
-        audioClassifier = null
-
-        recognizeService?.release()
-        recognizeService = null
+        if (audioRecord != null) {
+            audioRecord?.release()
+            audioRecord = null
+        }
+        if (audioClassifier != null) {
+            audioClassifier?.close()
+            audioClassifier = null
+        }
+        if (recognizeService != null) {
+            recognizeService?.release()
+            recognizeService = null
+        }
     }
 
     override fun onResult(
@@ -424,9 +430,13 @@ class MainActivity : AppCompatActivity(), RecognizeService.OnRecognizeResultList
         }
 
         runOnUiThread {
-            resultRecyclerAdapter.notifyDataSetChanged()
-            resultRecyclerView.scrollToPosition(resultRecyclerAdapter.itemCount - 1)
+            notifyDataSetChanged()
         }
+    }
+
+    private fun notifyDataSetChanged() {
+        resultRecyclerAdapter.notifyDataSetChanged()
+        resultRecyclerView.scrollToPosition(resultRecyclerAdapter.itemCount - 1)
     }
 
     override fun onPlayState(playing: Boolean) {
@@ -447,7 +457,7 @@ class MainActivity : AppCompatActivity(), RecognizeService.OnRecognizeResultList
         ModelService.unpack(this, uri, { _model ->
             voskModel = _model
             runOnUiThread {
-                resultRecyclerAdapter.notifyDataSetChanged()
+                notifyDataSetChanged()
                 audioRecognizeToggleButton.isEnabled = true
             }
         }, { s ->
@@ -462,7 +472,7 @@ class MainActivity : AppCompatActivity(), RecognizeService.OnRecognizeResultList
                     playing = false
                 )
             )
-            runOnUiThread { resultRecyclerAdapter.notifyDataSetChanged() }
+            runOnUiThread { notifyDataSetChanged() }
         })
     }
 

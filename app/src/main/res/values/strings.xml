@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SpeechToTextSimple</string>
+    <string name="app_name">AudioRecognizeAndroidDemo</string>
     <string name="string_recognize">开始识别</string>
     <string name="string_load_model">加载模型</string>
     <string name="string_play_audio">播放语音</string>
