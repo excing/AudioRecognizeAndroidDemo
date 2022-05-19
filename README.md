@@ -39,6 +39,15 @@ https://github.com/excing/AudioRecognizeAndroidDemo.git
 
 每次语音结束，都会保存录音，可点击识别结果列表中的`播放`按钮播放录音。
 
+## 参考
+
+感谢以下项目
+
+- Vosk Demo on Android Github Project: <https://github.com/alphacep/vosk-android-demo>
+- Sound yamnet/classification model: <https://tfhub.dev/google/lite-model/yamnet/classification/tflite/1>
+- Vosk Models: <https://alphacephei.com/vosk/models>
+- Sound Classifier Android sample: <https://github.com/tensorflow/examples/tree/master/lite/examples/sound_classification/android>
+
 -----
 
 MIT License
